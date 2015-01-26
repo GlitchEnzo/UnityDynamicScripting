@@ -1,0 +1,17 @@
+using UnityEngine; 
+public class TestBehaviour : MonoBehaviour 
+{	
+	public float testFloat = 9;
+	
+	public bool testBool = true;
+
+	void Start()
+	{
+		Debug.Log("I am in the start.");
+	}
+
+	void Update() 
+	{
+		transform.Translate(0.0f, 0.0f, 0.0001f);
+	}
+}
