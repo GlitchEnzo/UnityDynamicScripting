@@ -1,0 +1,17 @@
+using UnityEngine; 
+public class SpinBehaviour : MonoBehaviour 
+{	
+	public float xSpeed = -0.1f;
+	public float ySpeed = -0.1f;
+	public float zSpeed = -1.1f;
+	
+	void Start()
+	{
+		//Debug.Log("I am in the start.");
+	}
+
+	void Update() 
+	{
+		transform.Rotate(xSpeed, ySpeed, zSpeed);
+	}
+}
