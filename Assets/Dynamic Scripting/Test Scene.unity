@@ -105,7 +105,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7cc256443f1b2cf44993a17ad0d9c43a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scriptAsset: {fileID: 4900000, guid: 20fe6e1a00e5f734489622bc5a05d210, type: 3}
+  scriptAssets:
+  - {fileID: 4900000, guid: 20fe6e1a00e5f734489622bc5a05d210, type: 3}
 --- !u!81 &55663184
 AudioListener:
   m_ObjectHideFlags: 0
@@ -198,7 +199,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7cc256443f1b2cf44993a17ad0d9c43a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scriptAsset: {fileID: 4900000, guid: 20fe6e1a00e5f734489622bc5a05d210, type: 3}
+  scriptAssets:
+  - {fileID: 4900000, guid: 20fe6e1a00e5f734489622bc5a05d210, type: 3}
 --- !u!4 &352361566
 Transform:
   m_ObjectHideFlags: 0
@@ -304,7 +306,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7cc256443f1b2cf44993a17ad0d9c43a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scriptAsset: {fileID: 4900000, guid: 97667855a4f0dbe4680bbfd6d021cf88, type: 3}
+  scriptAssets:
+  - {fileID: 4900000, guid: 97667855a4f0dbe4680bbfd6d021cf88, type: 3}
+  - {fileID: 4900000, guid: 20fe6e1a00e5f734489622bc5a05d210, type: 3}
 --- !u!23 &2092622133
 Renderer:
   m_ObjectHideFlags: 0

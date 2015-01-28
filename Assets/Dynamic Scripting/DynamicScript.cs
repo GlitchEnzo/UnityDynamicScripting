@@ -1,12 +1,12 @@
 ﻿#define TIMING
-#define DEBUG
+//#define DEBUG
 
 namespace DynamicScripting
 {
 	using System;
 	using Mono.CSharp;
 	using UnityEngine;
-	using System.Collections;
+	using System.Collections.Generic;
 	using System.IO;
 	
 #if TIMING
@@ -21,12 +21,13 @@ namespace DynamicScripting
 		/// </summary>
 		public string Filepath { get; private set; }
 
-		private string gameObjectName;
+		private string className;
 
 		/// <summary>
-		/// The name of the MonoBehaviour contained in the script file.
+		/// Gets the list of game objects that this script is attached to.
 		/// </summary>
-		private string behaviourName;
+		/// <value>The game objects.</value>
+		private List<GameObject> gameObjects; 
 		
 		/// <summary>
 		/// The C# compiler as a service used to compile the script file.
@@ -43,6 +44,8 @@ namespace DynamicScripting
         /// </summary>
         private bool changed = false;
 
+		private Type scriptType;
+
 #if TIMING
 		/// <summary>
 		/// Used to measure the timing of various parts of the dynamic scripting.
@@ -50,10 +53,11 @@ namespace DynamicScripting
 		private Stopwatch stopwatch = new Stopwatch();
 #endif
 
-		public DynamicScript(string filepath, string gameObjectName)
+		public DynamicScript(string filepath)
 		{
 			Filepath = filepath;
-			this.gameObjectName = gameObjectName;
+
+			gameObjects = new List<GameObject>();
 
 			// Set up file watcher
 			int index = filepath.LastIndexOf("/");
@@ -90,17 +94,44 @@ namespace DynamicScripting
 			// Find the behaviour class name
 			int indexOfClass = code.IndexOf("class") + 5;
 			int indexOfColon = code.IndexOf(":");
-			behaviourName = code.Substring(indexOfClass, indexOfColon - indexOfClass).Trim();
+			className = code.Substring(indexOfClass, indexOfColon - indexOfClass).Trim();
 #if DEBUG
-			Debug.Log("Class name: " + behaviourName);
+			Debug.Log(string.Format("Compiling {0}", className));
 #endif
 			
 			evaluator.Compile(code);
-			evaluator.Run("GameObject.Find(\"" + gameObjectName + "\").AddComponent<" + behaviourName + ">();");	
+
+			scriptType = (Type)evaluator.Evaluate(string.Format("typeof({0});", className));
+
+			//Debug.Log ("Type = " + scriptType);
+			//Debug.Log ("Is Class = " + scriptType.IsClass);
+			Debug.Log ("Assembly = " + scriptType.Assembly);
+			foreach (var type in scriptType.Assembly.GetTypes()) 
+			{
+				Debug.Log ("Assembly Type = " + type);
+			}
+//			foreach (var type in scriptType.GetNestedTypes()) 
+//			{
+//				Debug.Log ("Type = " + type);
+//			}
+			foreach (var module in scriptType.Assembly.GetModules()) 
+			{
+				Debug.Log("Module: " + module.Name);
+				foreach (var type in module.GetTypes())
+				{
+					Debug.Log("Module Type = " + type.FullName);
+				}
+			}
+//			foreach (var member in scriptType.GetMembers()) 
+//			{
+//				Debug.Log ("Member = " + member);
+//            }
+
+			AttachAll();	
             
 #if TIMING
             stopwatch.Stop();
-            Debug.Log(string.Format("Compiling took {0} ms", stopwatch.ElapsedMilliseconds));
+			Debug.Log(string.Format("Compiling {0} took {1} ms", className, stopwatch.ElapsedMilliseconds));
 #endif
 		}
         
@@ -151,7 +182,7 @@ namespace DynamicScripting
 			{
 				changed = false;
 				
-				evaluator.Run("GameObject.Destroy(GameObject.Find(\"" + gameObjectName + "\").GetComponent<" + behaviourName + ">());");
+				DetachAll();
 				CompileScript();
 			}
 			
@@ -159,22 +190,61 @@ namespace DynamicScripting
 			// refresh the script
 			if (Input.GetKeyDown(KeyCode.F5))
 			{
-				evaluator.Run("GameObject.Destroy(GameObject.Find(\"" + gameObjectName + "\").GetComponent<" + behaviourName + ">());");
+				DetachAll();
 				CompileScript();
 			}
 			
 			// remove the script
             if (Input.GetKeyDown(KeyCode.Delete))
             {
-				evaluator.Run("GameObject.Destroy(GameObject.Find(\"" + gameObjectName + "\").GetComponent<" + behaviourName + ">());");
+				DetachAll();
             }
             
             // add the script
             if (Input.GetKeyDown(KeyCode.Insert))
             {
-                CompileScript();
+                //CompileScript();
+				AttachAll();
             }
 #endif
+        }
+
+		private void AttachAll()
+		{
+			foreach (var gameObject in gameObjects) 
+			{
+				evaluator.Run("GameObject.Find(\"" + gameObject.name + "\").AddComponent<" + className + ">();");
+			}
+		}
+
+		private void DetachAll()
+		{
+			foreach (var gameObject in gameObjects) 
+			{
+				evaluator.Run("GameObject.Destroy(GameObject.Find(\"" + gameObject.name + "\").GetComponent<" + className + ">());");
+            }
+        }
+
+		public void Attach(GameObject gameObject)
+		{
+			if (!gameObjects.Contains(gameObject)) 
+			{
+				gameObjects.Add(gameObject);
+			}
+
+			//gameObject.AddComponent(scriptType);
+
+			evaluator.Run("GameObject.Find(\"" + gameObject.name + "\").AddComponent<" + className + ">();");
+		}
+		
+		public void Detach(GameObject gameObject)
+		{
+			if (gameObjects.Contains(gameObject)) 
+			{
+				gameObjects.Remove(gameObject);
+            }
+
+			evaluator.Run("GameObject.Destroy(GameObject.Find(\"" + gameObject.name + "\").GetComponent<" + className + ">());");
         }
         
         /// <summary>

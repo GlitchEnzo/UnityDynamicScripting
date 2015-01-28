@@ -1,9 +1,9 @@
 using UnityEngine; 
 public class SpinBehaviour : MonoBehaviour 
 {	
-	public float xSpeed = -0.1f;
-	public float ySpeed = -0.1f;
-	public float zSpeed = -1.1f;
+	public float xSpeed = 10.0f;
+	public float ySpeed = 10.0f;
+	public float zSpeed = 10.0f;
 	
 	void Start()
 	{
@@ -12,6 +12,6 @@ public class SpinBehaviour : MonoBehaviour
 
 	void Update() 
 	{
-		transform.Rotate(xSpeed, ySpeed, zSpeed);
+		transform.Rotate(xSpeed * Time.deltaTime, ySpeed * Time.deltaTime, zSpeed * Time.deltaTime);
 	}
 }
