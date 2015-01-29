@@ -195,22 +195,28 @@ namespace DynamicScripting
 
             scriptType = (Type)evaluator.Evaluate(string.Format("typeof({0});", className));
 
-            ////Debug.Log ("Type = " + scriptType);
-            ////Debug.Log ("Is Class = " + scriptType.IsClass);
-            Debug.Log("Assembly = " + scriptType.Assembly);
-            foreach (var type in scriptType.Assembly.GetTypes())
-            {
-                Debug.Log("Assembly Type = " + type);
-            }
+            ////Debug.Log("Script Type = " + scriptType);
+            ////Debug.Log("BaseType = " + scriptType.BaseType);
+            ////Debug.Log("BaseType.BaseType = " + scriptType.BaseType.BaseType);
 
-            foreach (var module in scriptType.Assembly.GetModules())
-            {
-                Debug.Log("Module: " + module.Name);
-                foreach (var type in module.GetTypes())
-                {
-                    Debug.Log("Module Type = " + type.FullName);
-                }
-            }
+            ////Debug.Log("Assembly = " + scriptType.Assembly);
+
+            ////Debug.Log("Declaring Type = " + scriptType.DeclaringType);
+
+            ////Debug.Log(scriptType.GetNestedTypes().Length);
+
+            ////foreach (var type in scriptType.Assembly.GetTypes())
+            ////{
+            ////    Debug.Log("Assembly Type = " + type);
+            ////}
+
+            ////foreach (var module in scriptType.Assembly.GetModules())
+            ////{
+            ////    foreach (var type in module.GetTypes())
+            ////    {
+            ////        Debug.Log("Module Type = " + type.FullName);
+            ////    }
+            ////}
 
             ////foreach (var member in scriptType.GetMembers()) 
             ////{

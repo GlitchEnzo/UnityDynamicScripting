@@ -58,9 +58,12 @@
         /// </summary>
         private void Update()
         {
-            foreach (var script in scripts)
+            if (scripts != null)
             {
-                script.Update();
+                foreach (var script in scripts)
+                {
+                    script.Update();
+                }
             }
         }
 
@@ -69,10 +72,13 @@
         /// </summary>
         private void OnDestroy()
         {
-            foreach (var script in scripts)
+            if (scripts != null)
             {
-                script.StopWatching();
-                script.Detach(this.gameObject);
+                foreach (var script in scripts)
+                {
+                    script.StopWatching();
+                    ////script.Detach(this.gameObject);
+                }
             }
         }
     }
